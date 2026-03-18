@@ -1,6 +1,7 @@
 package ca.soccer1992.lavaproxy.packets.handlers;
 
 import ca.soccer1992.lavaproxy.Connection;
+import ca.soccer1992.lavaproxy.Main;
 import ca.soccer1992.lavaproxy.nbt.*;
 import ca.soccer1992.lavaproxy.packets.ConnectionTypes;
 import ca.soccer1992.lavaproxy.packets.Packet;
@@ -33,7 +34,7 @@ public class PreStatusHandler extends Handler{
             } catch (Exception e){
                 c.close();
             }
-            System.out.printf("%s has pinged%n",c.plr);
+            if (Main.logPings) System.out.printf("%s has pinged%n",c.plr);
             c.conType = ConnectionTypes.STATUS;
             c.setReader(new StatusReader());
             c.setHandler(new StatusHandler());

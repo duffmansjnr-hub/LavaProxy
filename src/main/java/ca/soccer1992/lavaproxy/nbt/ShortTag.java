@@ -12,4 +12,8 @@ public class ShortTag extends Tag {
     public void writePayload(DataOutput out) throws IOException {
         out.writeShort(value);
     }
+    @Override
+    public Object getJSON(){
+        return value;
+    }
 }

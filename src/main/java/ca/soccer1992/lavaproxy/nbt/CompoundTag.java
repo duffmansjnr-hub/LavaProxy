@@ -1,5 +1,7 @@
 package ca.soccer1992.lavaproxy.nbt;
 
+import org.json.JSONObject;
+
 import java.io.DataOutput;
 import java.io.IOException;
 import java.util.*;
@@ -17,5 +19,13 @@ public class CompoundTag extends Tag {
             tag.write(out); // compound elements still include type + name
         }
         out.writeByte(TagType.END.getId());
+    }
+    public JSONObject getJSON() throws IOException {
+        JSONObject comp = new JSONObject();
+
+        for (Tag tag : value.values()){
+            comp.put(tag.getName(), tag.getJSON());
+        }
+        return comp;
     }
 }

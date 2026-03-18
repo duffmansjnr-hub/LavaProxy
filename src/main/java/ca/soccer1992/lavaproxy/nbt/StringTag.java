@@ -13,4 +13,8 @@ public class StringTag extends Tag {
     public void writePayload(DataOutput out) throws IOException {
         out.writeUTF(value);
     }
+    @Override
+    public Object getJSON(){
+        return value;
+    }
 }

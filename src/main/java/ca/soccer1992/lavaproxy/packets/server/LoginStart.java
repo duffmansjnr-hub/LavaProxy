@@ -5,6 +5,7 @@ import ca.soccer1992.lavaproxy.packets.Packet;
 import io.netty.buffer.ByteBuf;
 
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 import static ca.soccer1992.lavaproxy.PacketHelpers.*;
@@ -22,7 +23,8 @@ public class LoginStart extends Packet {
     public void decode (ByteBuf buf){
 
         setName(readString(buf));
-        setUUID(readUUID(buf));
+        setUUID(UUID.nameUUIDFromBytes(("OfflinePlayer:" + playerName).getBytes(StandardCharsets.UTF_8)));
+        //setUUID(readUUID(buf));
     }
     public void encode(ByteBuf buf){
         writeString(playerName,buf);

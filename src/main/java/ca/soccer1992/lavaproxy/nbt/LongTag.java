@@ -11,4 +11,8 @@ public class LongTag extends Tag {
     public void writePayload(DataOutput out) throws IOException {
         out.writeLong(value);
     }
+    @Override
+    public Object getJSON(){
+        return value;
+    }
 }

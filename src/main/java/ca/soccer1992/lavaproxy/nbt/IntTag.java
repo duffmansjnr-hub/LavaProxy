@@ -12,4 +12,8 @@ public class IntTag extends Tag {
     public void writePayload(DataOutput out) throws IOException {
         out.writeInt(value);
     }
+    @Override
+    public Object getJSON(){
+        return value;
+    }
 }

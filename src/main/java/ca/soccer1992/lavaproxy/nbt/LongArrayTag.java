@@ -1,5 +1,7 @@
 package ca.soccer1992.lavaproxy.nbt;
 
+import org.json.JSONArray;
+
 import java.io.DataOutput;
 import java.io.IOException;
 
@@ -14,5 +16,12 @@ public class LongArrayTag extends Tag {
         out.writeInt(value.length);
         for (long l : value) out.writeLong(l);
     }
-
+    @Override
+    public Object getJSON() throws IOException {
+        JSONArray arr = new JSONArray();
+        for (long a : value){
+            arr.put(a);
+        }
+        return arr;
+    }
 }

@@ -15,4 +15,8 @@ public class IntArrayTag extends Tag {
         out.writeInt(value.length);
         for (int l : value) out.writeInt(l);
     }
+    @Override
+    public Object getJSON(){
+        return value;
+    }
 }

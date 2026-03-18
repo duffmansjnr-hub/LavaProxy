@@ -12,4 +12,8 @@ public class FloatTag extends Tag {
     public void writePayload(DataOutput out) throws IOException {
         out.writeFloat(value);
     }
+    @Override
+    public Object getJSON(){
+        return value;
+    }
 }

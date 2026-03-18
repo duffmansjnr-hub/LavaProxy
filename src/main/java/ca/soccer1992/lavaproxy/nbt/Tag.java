@@ -1,5 +1,7 @@
 package ca.soccer1992.lavaproxy.nbt;
 
+import org.json.JSONArray;
+
 import java.io.DataOutput;
 import java.io.IOException;
 
@@ -14,5 +16,6 @@ public abstract class Tag {
         writePayload(out);            // payload depends on tag type
     }
     public abstract void writePayload(DataOutput out) throws IOException;
+    public abstract Object getJSON() throws IOException;
 
 }

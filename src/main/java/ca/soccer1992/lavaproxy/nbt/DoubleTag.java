@@ -12,4 +12,8 @@ public class DoubleTag extends Tag {
     public void writePayload(DataOutput out) throws IOException {
         out.writeDouble(value);
     }
+    @Override
+    public Object getJSON(){
+        return value;
+    }
 }

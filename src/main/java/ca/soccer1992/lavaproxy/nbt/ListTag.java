@@ -1,5 +1,7 @@
 package ca.soccer1992.lavaproxy.nbt;
 
+import org.json.JSONArray;
+
 import java.io.DataOutput;
 import java.io.IOException;
 import java.util.*;
@@ -20,5 +22,13 @@ public class ListTag extends Tag {
         for (Tag tag : elements) {
             tag.writePayload(out);
         }
+    }
+    @Override
+    public Object getJSON() throws IOException {
+        JSONArray arr = new JSONArray();
+        for (Tag a : elements){
+            arr.put(a.getJSON());
+        }
+        return arr;
     }
 }

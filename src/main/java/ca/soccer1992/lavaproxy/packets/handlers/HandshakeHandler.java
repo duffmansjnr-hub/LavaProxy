@@ -5,6 +5,7 @@ import ca.soccer1992.lavaproxy.packets.ConnectionTypes;
 import ca.soccer1992.lavaproxy.packets.HandshakeIntent;
 import ca.soccer1992.lavaproxy.packets.Packet;
 import ca.soccer1992.lavaproxy.packets.readers.LoginReader;
+import ca.soccer1992.lavaproxy.packets.readers.PreStatusReader;
 import ca.soccer1992.lavaproxy.packets.server.HandshakePacket;
 
 import java.net.InetSocketAddress;
@@ -22,12 +23,16 @@ public class HandshakeHandler extends Handler{
             return false;
         }
         c.connectAddr = new InetSocketAddress(packet.host, packet.port);
+        c.setProtocol(packet.proto);
+
         switch (packet.intent){
             case HandshakeIntent.STATUS:
-                return false; // unimplemented
+                c.setReader(new PreStatusReader());
+                c.setHandler(new PreStatusHandler());
+                c.conType = ConnectionTypes.PRE_STATUS;
+                return true; // unimplemented
             case HandshakeIntent.LOGIN:
                 c.setReader(new LoginReader());
-                c.setProtocol(packet.proto);
                 c.conType = ConnectionTypes.LOGIN;
                 c.setHandler(new LoginHandler());
                 return true;

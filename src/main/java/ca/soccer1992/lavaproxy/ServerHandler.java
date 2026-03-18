@@ -1,8 +1,6 @@
 package ca.soccer1992.lavaproxy;
 
 import ca.soccer1992.lavaproxy.packets.Packet;
-import ca.soccer1992.lavaproxy.packets.server.HandshakePacket;
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
@@ -11,13 +9,12 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
         Packet in = (Packet) msg;
-        Class<?> c = in.getClass();
+        //Class<?> c = in.getClass();
         Connection con = ctx.channel().attr(Main.READER).get();
         try {
             if (!con.packetHandler.handle(in, con)) {
                 //System.out.println("Packet was not handled...");
                 con.close();
-                return;
             }
         } catch (Exception e){
             con.disconnect(e.getMessage(),true);
@@ -33,7 +30,6 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        cause.printStackTrace();
         ctx.close();
     }
 }

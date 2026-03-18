@@ -15,7 +15,6 @@ import static ca.soccer1992.lavaproxy.PacketHelpers.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 
 public class Connection {
     public final Channel nChannel;
@@ -82,7 +81,6 @@ public class Connection {
 
     public void disconnect(){
         disconnect("Disconnected", false);
-        return ;
     }
     public void disconnect(String reason, boolean isError){
         _disconnect(reason,      isError && (!Main.logErrors));
@@ -94,7 +92,7 @@ public class Connection {
     public void _disconnect(String reason, boolean nolog){
 
         switch (conType){
-            case ConnectionTypes.HANDSHAKE:
+            case ConnectionTypes.HANDSHAKE, ConnectionTypes.PRE_STATUS, ConnectionTypes.STATUS:
                 // just close the connection
                 close();
                 // generic close

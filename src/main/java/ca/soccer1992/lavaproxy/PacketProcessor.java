@@ -5,17 +5,15 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 
-import java.nio.charset.StandardCharsets;
 
 public class PacketProcessor extends ChannelDuplexHandler {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         Connection con = ctx.channel().attr(Main.READER).get();
         con.disconnect(cause.toString(), true);
-        return;
     }
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+    public void channelRead(ChannelHandlerContext ctx, Object msg){
 
         // replace the message
         ByteBuf in = (ByteBuf) msg;
@@ -25,7 +23,7 @@ public class PacketProcessor extends ChannelDuplexHandler {
 
         try {
             while (read != null) {
-                System.out.println(read.toString(StandardCharsets.UTF_8));
+                //System.out.println(read.toString(StandardCharsets.UTF_8));
                 Packet p = con.processPacket(read);
                 if (p == null) {
                     // invalid packet
@@ -38,7 +36,6 @@ public class PacketProcessor extends ChannelDuplexHandler {
 
             }
         } catch (Exception e){
-            e.printStackTrace();
             con.disconnect(e.toString(), true);
         } finally{
             in.release();

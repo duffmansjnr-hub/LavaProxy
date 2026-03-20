@@ -27,7 +27,26 @@ public class LoginStart extends Packet {
     }
     public void encode(ByteBuf buf, MinecraftVersions proto){
         writeString(playerName,buf);
-        writeUUID(uuid,buf);
+        // 1.20.2 is norm packet Y
+        // 1.19.3 is 1.20.2 with has player uuid Y
+        // 1.19.2 same as 1.19.3 with no sig data Y
+        // 1.19 is <1.19 with no sig data Y
+
+
+        if (proto.getProtocol()<=MinecraftVersions.MINECRAFT_1_19.getProtocol()){
+            return;
+        }
+        if (proto.getProtocol()<MinecraftVersions.MINECRAFT_1_19_3.getProtocol()){
+            buf.writeBoolean(false); // no sig
+        }
+
+        if (proto.getProtocol()<MinecraftVersions.MINECRAFT_1_20_2.getProtocol()){
+            buf.writeBoolean(true); // has UUID
+        }
+
+        if (proto.getProtocol()>=MinecraftVersions.MINECRAFT_1_19_1.getProtocol()){
+            writeUUID(uuid,buf);
+        }
     }
 
 }

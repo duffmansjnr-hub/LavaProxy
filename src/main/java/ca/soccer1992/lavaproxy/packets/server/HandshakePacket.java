@@ -22,7 +22,7 @@ public class HandshakePacket extends Packet {
     public void setProtocol(int proto){setProtocol(MinecraftVersions.ID_TO_PROTOCOL_CONSTANT.get(proto));}
     public void setIntent(HandshakeIntent intent){this.intent = intent;}
     public void setHost(String host){this.host = host;}
-    public void decode (ByteBuf buf){
+    public void decode (ByteBuf buf, MinecraftVersions proto){
         setProtocol(readVarInt(buf));
         //System.out.println(this.proto);
         setHost(readString(buf));
@@ -30,7 +30,7 @@ public class HandshakePacket extends Packet {
 
         setIntent(HandshakeIntent.getIntentFromID(readVarInt(buf)));
     }
-    public void encode(ByteBuf buf){
+    public void encode(ByteBuf buf, MinecraftVersions proto){
         writeVarInt(this.proto.getProtocol(), buf);
         writeString(this.host, buf);
         buf.writeShort(this.port);

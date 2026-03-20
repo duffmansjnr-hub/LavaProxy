@@ -1,14 +1,14 @@
 package ca.soccer1992.lavaproxy.packets;
 
+import ca.soccer1992.lavaproxy.MinecraftVersions;
 import io.netty.buffer.ByteBuf;
 
 public abstract class Packet {
-    public byte getID() { return 0; }
     public String toString() { return name; }
     public ConnectionTypes getType() { return null; }
 
     public String name = "";
-    public void decode(ByteBuf buf) { return; }
-    public void encode(ByteBuf buf) { return; }
+    public void decode(ByteBuf buf, MinecraftVersions proto) { }
+    public void encode(ByteBuf buf, MinecraftVersions proto) { }
 
 }

@@ -3,7 +3,6 @@ package ca.soccer1992.lavaproxy.packets.readers;
 import ca.soccer1992.lavaproxy.MinecraftVersions;
 import ca.soccer1992.lavaproxy.packets.DefinitionPair;
 import ca.soccer1992.lavaproxy.packets.Packet;
-import ca.soccer1992.lavaproxy.packets.server.HandshakePacket;
 import io.netty.buffer.ByteBuf;
 
 import java.lang.reflect.InvocationTargetException;
@@ -22,7 +21,7 @@ public abstract class Reader {
         int id = readVarInt(buf);
         Packet p = getPacketFromInfo(MinecraftVersions.ID_TO_PROTOCOL_CONSTANT.get(ver), id).getDeclaredConstructor().newInstance();
 
-        p.decode(buf);
+        p.decode(buf, MinecraftVersions.ID_TO_PROTOCOL_CONSTANT.get(ver));
         return p;
     }
     public int getPacketFromInfo(MinecraftVersions ver, Class<? extends Packet> packet){
@@ -60,6 +59,7 @@ public abstract class Reader {
         Map. Entry<Class<? extends Packet>, List<DefinitionPair>> correct = null;
         for (var e : definitions.entrySet()){
             for (DefinitionPair pair : e.getValue()){
+                if (pair.packetID() != packetID) continue;
                 if (oldEntry != null){
                     if (pair.protocol().getProtocol()>ver){
                         return e.getKey();

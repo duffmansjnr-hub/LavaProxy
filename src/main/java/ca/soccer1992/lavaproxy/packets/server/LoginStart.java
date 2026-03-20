@@ -1,10 +1,9 @@
 package ca.soccer1992.lavaproxy.packets.server;
+import ca.soccer1992.lavaproxy.MinecraftVersions;
 import ca.soccer1992.lavaproxy.packets.ConnectionTypes;
-import ca.soccer1992.lavaproxy.packets.HandshakeIntent;
 import ca.soccer1992.lavaproxy.packets.Packet;
 import io.netty.buffer.ByteBuf;
 
-import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
@@ -20,13 +19,13 @@ public class LoginStart extends Packet {
     public void setUUID(UUID uuid){this.uuid = uuid;}
     public void setName(String name){this.playerName = name;}
 
-    public void decode (ByteBuf buf){
+    public void decode (ByteBuf buf, MinecraftVersions proto){
 
         setName(readString(buf));
         setUUID(UUID.nameUUIDFromBytes(("OfflinePlayer:" + playerName).getBytes(StandardCharsets.UTF_8)));
         //setUUID(readUUID(buf));
     }
-    public void encode(ByteBuf buf){
+    public void encode(ByteBuf buf, MinecraftVersions proto){
         writeString(playerName,buf);
         writeUUID(uuid,buf);
     }

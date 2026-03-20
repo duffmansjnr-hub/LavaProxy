@@ -10,6 +10,7 @@ public class Main {
             AttributeKey.valueOf("connection");
     public static boolean logErrors = true;
     public static boolean logPings = true;
+    public static int CON_AMOUNT = 0;
 
     public static void main(String[] args) throws Exception {
         //System.out.println(root.value.values());

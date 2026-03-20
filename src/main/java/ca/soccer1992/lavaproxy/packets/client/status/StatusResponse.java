@@ -1,5 +1,6 @@
 package ca.soccer1992.lavaproxy.packets.client.status;
 
+import ca.soccer1992.lavaproxy.MinecraftVersions;
 import ca.soccer1992.lavaproxy.packets.ConnectionTypes;
 import ca.soccer1992.lavaproxy.packets.Packet;
 import io.netty.buffer.ByteBuf;
@@ -16,10 +17,10 @@ public class StatusResponse extends Packet {
     public void setJSON(String json){
         this.json = json;
     }
-    public void decode(ByteBuf buf){
+    public void decode(ByteBuf buf, MinecraftVersions proto){
         json = readString(buf);
     }
-    public void encode(ByteBuf buf){
+    public void encode(ByteBuf buf, MinecraftVersions proto){
         writeString(json,buf);
     }
 }

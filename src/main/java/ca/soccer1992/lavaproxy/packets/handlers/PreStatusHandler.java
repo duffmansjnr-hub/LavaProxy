@@ -24,10 +24,10 @@ public class PreStatusHandler extends Handler{
             info.put(ver);
             CompoundTag players = new CompoundTag("players");
             players.put(new IntTag("max",Integer.MAX_VALUE));
-            players.put(new IntTag("online",Integer.MIN_VALUE));
+            players.put(new IntTag("online",Main.CON_AMOUNT));
             info.put(players);
             CompoundTag desc = new CompoundTag("description");
-            desc.put(new StringTag("text","A LavaProxy proxy."));
+            desc.put(new StringTag("text","A LavaProxy proxy.\nTotal connections: " + Main.CON_AMOUNT));
             info.put(desc);
             try {
                 response.setJSON(info.getJSON().toString());

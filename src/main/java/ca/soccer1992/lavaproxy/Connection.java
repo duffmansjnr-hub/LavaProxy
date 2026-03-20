@@ -70,7 +70,7 @@ public class Connection {
 
     }
     public void _writePacket(Packet p, ByteBuf buf){
-        p.encode(buf);
+        p.encode(buf, protocol);
         ByteBuf rewritten14 = Unpooled.buffer();
         writeVarInt(buf.readableBytes(), rewritten14);
         rewritten14.writeBytes(buf, 0, buf.readableBytes());

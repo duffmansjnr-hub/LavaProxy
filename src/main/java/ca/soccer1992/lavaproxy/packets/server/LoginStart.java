@@ -7,7 +7,7 @@ import io.netty.buffer.ByteBuf;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
-import static ca.soccer1992.lavaproxy.PacketHelpers.*;
+import static ca.soccer1992.lavaproxy.utils.PacketHelpers.*;
 
 public class LoginStart extends Packet {
     public UUID uuid;

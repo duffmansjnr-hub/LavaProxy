@@ -1,9 +1,8 @@
-package ca.soccer1992.lavaproxy;
+package ca.soccer1992.lavaproxy.utils;
 
 import io.netty.buffer.ByteBuf;
 
 import java.io.*;
-import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import java.util.function.Function;

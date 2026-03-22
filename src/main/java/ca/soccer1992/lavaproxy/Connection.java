@@ -10,8 +10,10 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
-
-import static ca.soccer1992.lavaproxy.PacketHelpers.*;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import static ca.soccer1992.lavaproxy.utils.ComponentUtils.json;
+import static ca.soccer1992.lavaproxy.utils.PacketHelpers.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.net.InetSocketAddress;
@@ -96,18 +98,23 @@ public class Connection {
         nChannel.writeAndFlush(rewritten14);
 
     }
-
-    public void disconnect(){
-        disconnect("Disconnected", false);
-    }
     public void disconnect(String reason, boolean isError){
-        _disconnect(reason,      isError && (!Main.logErrors));
+        disconnect(Component.text(reason), isError);
     }
     public void noLogDisconnect(String reason){
+        _disconnect(Component.text(reason), true);
+    }
+    public void disconnect(){
+        disconnect(Component.text("Disconnected"), false);
+    }
+    public void disconnect(Component reason, boolean isError){
+        _disconnect(reason,      isError && (!Main.logErrors));
+    }
+    public void noLogDisconnect(Component reason){
 
         _disconnect(reason, true);
     }
-    public void _disconnect(String reason, boolean nolog){
+    public void _disconnect(Component reason, boolean nolog){
         try {
             switch (conType) {
                 case ConnectionTypes.HANDSHAKE, ConnectionTypes.PRE_STATUS, ConnectionTypes.STATUS:
@@ -117,7 +124,7 @@ public class Connection {
                     break;
                 case ConnectionTypes.LOGIN:
                     LoginKick kick = new LoginKick();
-                    kick.setReason(reason);
+                    kick.setReason(json(reason));
                     writePacket(kick);
                     close();
             }
@@ -125,7 +132,7 @@ public class Connection {
             close();
         }
         if (nolog) return;
-        System.out.printf("%s has disconnected for: %s%n",plr,reason);
+        System.out.printf("%s has disconnected for: %s%n",plr,PlainTextComponentSerializer.plainText().serialize(reason));
 
     }
     public void close(){

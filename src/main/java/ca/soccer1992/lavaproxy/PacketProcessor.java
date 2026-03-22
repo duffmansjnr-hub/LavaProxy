@@ -5,13 +5,14 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
+import net.kyori.adventure.text.Component;
 
-import static ca.soccer1992.lavaproxy.PacketHelpers.*;
+import static ca.soccer1992.lavaproxy.utils.PacketHelpers.*;
 public class PacketProcessor extends ChannelDuplexHandler {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         Connection con = ctx.channel().attr(Main.READER).get();
-        con.disconnect(cause.toString(), true);
+        con.disconnect(Component.text(cause.toString()), true);
     }
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg){
@@ -24,14 +25,13 @@ public class PacketProcessor extends ChannelDuplexHandler {
         try {
             while (read != null) {
                 if (con.compressionAmount>-1){
-                    // check first varInt (0 = uncompressed, anything else = compressed length)
+                    // check first varInt (0 = uncompressed, anything else = decompressed length)
                     int compLength = readVarInt(read);
                     if (compLength>0){
 
-                        byte[] decompressed = new byte[compLength];
                         byte[] tmp = new byte[read.readableBytes()];
                         read.readBytes(tmp);
-                        decompressed = decompress(tmp);
+                        byte[] decompressed = decompress(tmp);
                         read = Unpooled.buffer();
                         read.writeBytes(decompressed);
                     }
@@ -50,7 +50,7 @@ public class PacketProcessor extends ChannelDuplexHandler {
 
             }
         } catch (Exception e){
-            con.disconnect(e.toString(), true);
+            con.disconnect(Component.text(e.toString()), true);
         } finally{
             in.release();
 

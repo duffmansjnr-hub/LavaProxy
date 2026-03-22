@@ -1,5 +1,6 @@
 package ca.soccer1992.lavaproxy;
 import io.netty.util.AttributeKey;
+import net.kyori.adventure.text.Component;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

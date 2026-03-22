@@ -8,6 +8,9 @@ import ca.soccer1992.lavaproxy.packets.client.LoginKick;
 import ca.soccer1992.lavaproxy.packets.readers.LoginReader;
 import ca.soccer1992.lavaproxy.packets.server.HandshakePacket;
 import ca.soccer1992.lavaproxy.packets.server.LoginStart;
+import ca.soccer1992.lavaproxy.utils.ComponentUtils;
+
+import static ca.soccer1992.lavaproxy.utils.ComponentUtils.json;
 
 public class LoginHandler extends Handler{
     public boolean handle(Packet p, Connection c){
@@ -19,7 +22,7 @@ public class LoginHandler extends Handler{
             c.plr.setName(packet.playerName);
             c.plr.setUUID(packet.uuid);
             System.out.printf("Player %s (%s) has started login%n",c.plr, c.addr.getHostString());
-            c.disconnect("WIP",false);
+            c.disconnect(ComponentUtils.parser.deserialize("<rainbow>Testing</rainbow>"),false);
             return true;
         }
         return false;

@@ -4,12 +4,9 @@ import ca.soccer1992.lavaproxy.MinecraftVersions;
 import ca.soccer1992.lavaproxy.packets.DefinitionPair;
 import ca.soccer1992.lavaproxy.packets.Packet;
 import ca.soccer1992.lavaproxy.packets.server.HandshakePacket;
-import io.netty.buffer.ByteBuf;
 
 import java.util.List;
 import java.util.Map;
-
-import static ca.soccer1992.lavaproxy.PacketHelpers.*;
 
 public class HandshakeReader extends Reader {
     public Map<Class<? extends Packet>, List<DefinitionPair>> serverDefinitions = Map.of(

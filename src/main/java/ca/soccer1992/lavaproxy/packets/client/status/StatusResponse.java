@@ -5,7 +5,7 @@ import ca.soccer1992.lavaproxy.packets.ConnectionTypes;
 import ca.soccer1992.lavaproxy.packets.Packet;
 import io.netty.buffer.ByteBuf;
 
-import static ca.soccer1992.lavaproxy.PacketHelpers.*;
+import static ca.soccer1992.lavaproxy.utils.PacketHelpers.*;
 
 public class StatusResponse extends Packet {
     public String json= "";

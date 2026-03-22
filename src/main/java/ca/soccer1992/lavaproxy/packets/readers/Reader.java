@@ -9,7 +9,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
 
-import static ca.soccer1992.lavaproxy.PacketHelpers.readVarInt;
+import static ca.soccer1992.lavaproxy.utils.PacketHelpers.readVarInt;
 
 public abstract class Reader {
     public static Map<Class<? extends Packet>, List<DefinitionPair>> serverDefinitions = Map.of();

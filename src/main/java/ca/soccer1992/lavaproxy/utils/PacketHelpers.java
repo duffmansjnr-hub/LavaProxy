@@ -7,6 +7,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 public class PacketHelpers {
     private static final int SEGMENT_BITS = 0x7F;
@@ -81,13 +82,26 @@ public class PacketHelpers {
         ByteBuf clone = buf.copy();
         return readFunc.apply(clone);
     }
-    public static byte[] decompress(final byte[] compressedBytes) throws IOException {
-        if (compressedBytes == null || compressedBytes.length == 0) {
+    public static byte[] compress(byte[] raw) {
+        try{
+        // Use try-with-resources to ensure streams are closed automatically
+        try (ByteArrayOutputStream bos = new ByteArrayOutputStream(raw.length);
+             GZIPOutputStream gzipOutput = new GZIPOutputStream(bos)) {
+            gzipOutput.write(raw);
+            // GZIPOutputStream must be closed to write all trailer information
+            gzipOutput.close();
+            return bos.toByteArray();
+        }} catch (Exception e){
+            return null;
+        }
+    }
+    public static byte[] decompress(final byte[] compressed) throws IOException {
+        if (compressed == null || compressed.length == 0) {
             return new byte[0];
         }
 
         // Use try-with-resources to ensure streams are closed automatically
-        try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(compressedBytes);
+        try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(compressed);
              GZIPInputStream gzipInputStream = new GZIPInputStream(byteArrayInputStream);
              ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
 

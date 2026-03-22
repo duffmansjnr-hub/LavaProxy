@@ -83,12 +83,25 @@ public class Connection {
 
             if (buf.readableBytes()>=compressionAmount){
                 writeVarInt(buf.readableBytes(), compressedRewritten);
+                byte[] e = new byte[buf.readableBytes()];
+                buf.readBytes(e);
+                byte[] compressed = compress(e);
+                if (compressed == null){
+                    close();
+                    return;
+                }
+                compressedRewritten.writeBytes(compressed);
+
+
+
             } else {
                 writeVarInt(0, compressedRewritten);
+                compressedRewritten.writeBytes(buf, 0, buf.readableBytes());
+
             }
 
-        }
-        compressedRewritten.writeBytes(buf, 0, buf.readableBytes());
+        } else        compressedRewritten.writeBytes(buf, 0, buf.readableBytes());
+
 
         ByteBuf rewritten14 = Unpooled.buffer();
         writeVarInt(compressedRewritten.readableBytes(), rewritten14);

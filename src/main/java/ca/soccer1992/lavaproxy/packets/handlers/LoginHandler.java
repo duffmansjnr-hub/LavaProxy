@@ -4,6 +4,7 @@ import ca.soccer1992.lavaproxy.Connection;
 import ca.soccer1992.lavaproxy.packets.ConnectionTypes;
 import ca.soccer1992.lavaproxy.packets.HandshakeIntent;
 import ca.soccer1992.lavaproxy.packets.Packet;
+import ca.soccer1992.lavaproxy.packets.client.CompressionPacket;
 import ca.soccer1992.lavaproxy.packets.client.LoginKick;
 import ca.soccer1992.lavaproxy.packets.readers.LoginReader;
 import ca.soccer1992.lavaproxy.packets.server.HandshakePacket;
@@ -24,7 +25,12 @@ public class LoginHandler extends Handler{
             System.out.printf("Player %s (%s) has started login%n",c.plr, c.addr.getHostString());
             c.disconnect(ComponentUtils.parser.deserialize("<rainbow>Testing</rainbow>"),false);
             return true;
+
+        } else if (p instanceof final CompressionPacket packet) {
+            c.setCompression(packet.threshold);
         }
+
+
         return false;
     }
 }

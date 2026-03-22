@@ -2,8 +2,9 @@ package ca.soccer1992.lavaproxy;
 
 import ca.soccer1992.lavaproxy.packets.ConnectionTypes;
 import ca.soccer1992.lavaproxy.packets.Packet;
-import ca.soccer1992.lavaproxy.packets.client.CompressionPacket;
-import ca.soccer1992.lavaproxy.packets.client.LoginKick;
+import ca.soccer1992.lavaproxy.packets.client.login.CompressionPacket;
+import ca.soccer1992.lavaproxy.packets.client.login.LoginKick;
+import ca.soccer1992.lavaproxy.packets.client.NBTKick;
 import ca.soccer1992.lavaproxy.packets.handlers.*;
 import ca.soccer1992.lavaproxy.packets.readers.*;
 import ca.soccer1992.lavaproxy.packets.readers.Reader;
@@ -14,6 +15,7 @@ import io.netty.channel.ChannelFutureListener;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import static ca.soccer1992.lavaproxy.utils.ComponentUtils.json;
+import static ca.soccer1992.lavaproxy.utils.ComponentUtils.nbt;
 import static ca.soccer1992.lavaproxy.utils.PacketHelpers.*;
 
 import java.lang.reflect.InvocationTargetException;
@@ -142,11 +144,18 @@ public class Connection {
                     close();
                     // generic close
                     break;
-                case ConnectionTypes.LOGIN:
+                case ConnectionTypes.LOGIN,ConnectionTypes.POST_SUCCESS:
                     LoginKick kick = new LoginKick();
                     kick.setReason(json(reason));
                     writePacket(kick);
                     close();
+                    break;
+                case ConnectionTypes.CONFIG, ConnectionTypes.PLAY:
+                    NBTKick nKick = new NBTKick();
+                    nKick.setReason(nbt(reason));
+                    writePacket(nKick);
+                    //close();
+                    break;
             }
         } catch (Exception e){
             close();

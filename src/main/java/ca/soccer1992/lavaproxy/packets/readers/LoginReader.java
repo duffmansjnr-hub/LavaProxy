@@ -3,7 +3,9 @@ package ca.soccer1992.lavaproxy.packets.readers;
 import ca.soccer1992.lavaproxy.MinecraftVersions;
 import ca.soccer1992.lavaproxy.packets.DefinitionPair;
 import ca.soccer1992.lavaproxy.packets.Packet;
-import ca.soccer1992.lavaproxy.packets.client.*;
+import ca.soccer1992.lavaproxy.packets.client.login.CompressionPacket;
+import ca.soccer1992.lavaproxy.packets.client.login.LoginKick;
+import ca.soccer1992.lavaproxy.packets.client.login.LoginSuccess;
 import ca.soccer1992.lavaproxy.packets.server.*;
 
 import java.util.List;
@@ -13,6 +15,9 @@ public class LoginReader extends Reader {
     public Map<Class<? extends Packet>, List<DefinitionPair>> serverDefinitions = Map.of(
             LoginStart.class, List.of(
                     new DefinitionPair(MinecraftVersions.MINECRAFT_1_8, 0x00)
+            ),
+            LoginAck.class, List.of(
+                    new DefinitionPair(MinecraftVersions.MINECRAFT_1_8, 0x03)
             )
     );
     public Map<Class<? extends Packet>, List<DefinitionPair>> clientDefinitions = Map.of(
@@ -21,8 +26,12 @@ public class LoginReader extends Reader {
             ),
             CompressionPacket.class, List.of(
                     new DefinitionPair(MinecraftVersions.MINECRAFT_1_8, 0x03)
+            ),
+            LoginSuccess.class, List.of(
+                    new DefinitionPair(MinecraftVersions.MINECRAFT_1_8, 0x02)
             )
-    );
+
+            );
 
     @Override
     protected Map<Class<? extends Packet>, List<DefinitionPair>> serverDefinitions(){

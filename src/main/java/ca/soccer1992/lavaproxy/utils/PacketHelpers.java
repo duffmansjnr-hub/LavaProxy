@@ -34,6 +34,14 @@ public class PacketHelpers {
 
         return value;
     }
+    public static String dashUUID(String uuid){
+        return uuid.substring(0,8) + "-" +
+                uuid.substring(8,12) + "-" +
+                uuid.substring(12,16) + "-" +
+                uuid.substring(16, 20) + "-" +
+                uuid.substring(20);
+
+    }
     public static int readVarInt(ByteBuf buf) {
         int read = buf.readableBytes();
         if (read == 0) {

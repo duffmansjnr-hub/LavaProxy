@@ -36,14 +36,12 @@ public class ConfigHandler extends Handler {
                 buf.readBytes(out);
                 rewrite.setChannel(packet.channel);
                 rewrite.setData(out);
-                System.out.println(rewritten);
                 c.backendConnection.writePacket(rewrite);
                 buf.release();
             }
             dataBuf.release();
             return true;
         }
-        System.out.println(p);
 
         return false;
     }

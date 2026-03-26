@@ -44,7 +44,11 @@ public class Connection {
         this.compressionAmount = amt;
     }
     public void backendDisconnect(String message){
-        backendDisconnect(fromJSON(message));
+        try {
+            backendDisconnect(fromJSON(message));
+        } catch (Exception e){
+            backendDisconnect(Component.text(message));
+        }
     }
 
     public String fillPlaceholders(String placeholder, String kickMsg, String brand){
@@ -193,7 +197,6 @@ public class Connection {
     }
     public void _disconnect(Component reason, boolean nolog){
         if (isClosed) return;
-
         try {
             switch (conType) {
                 case ConnectionTypes.HANDSHAKE, ConnectionTypes.PRE_STATUS, ConnectionTypes.STATUS:
@@ -209,7 +212,9 @@ public class Connection {
                     break;
                 case ConnectionTypes.CONFIG, ConnectionTypes.PLAY:
                     NBTKick nKick = new NBTKick();
+
                     nKick.setReason(nbt(reason));
+
                     writePacket(nKick);
                     close();
                     break;
@@ -223,6 +228,8 @@ public class Connection {
 
     }
     public void close(){
+
+        if (isClosed) return;
         isClosed = true;
         nChannel.writeAndFlush(Unpooled.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
         heldData.release();

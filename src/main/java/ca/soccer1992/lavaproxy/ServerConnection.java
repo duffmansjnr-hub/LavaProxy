@@ -33,7 +33,10 @@ public class ServerConnection {
 
                             ch.pipeline().addLast(new ServerHandler());
                             ch.pipeline().addLast(new ChannelInboundHandlerAdapter() {
-
+                                @Override
+                                public void channelInactive(ChannelHandlerContext ctx){
+                                    c.close();
+                                }
 
                                 @Override
                                 public void channelActive(ChannelHandlerContext ctx) {

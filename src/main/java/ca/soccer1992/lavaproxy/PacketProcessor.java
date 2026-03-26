@@ -21,6 +21,18 @@ public class PacketProcessor extends ChannelDuplexHandler {
         this.client = client;
     }
     @Override
+    public void channelInactive(ChannelHandlerContext ctx){
+        Connection con = ctx.channel().attr(Main.READER).get();
+
+
+        if (con.backendConnection != null){
+
+            if (!this.client){
+                con.backendConnection.close();
+            }
+        }
+    }
+    @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg){
 
         // replace the message

@@ -36,6 +36,8 @@ public class ComponentUtils {
         } else if (json.startsWith("[")){
             out.put("extra",new JSONArray(json));
             out.put("text","");
+        } else {
+            out.put("text",plain(comp));
         }
         return parse("", out);
     }

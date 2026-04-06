@@ -7,6 +7,7 @@ import ca.soccer1992.lavaproxy.packets.Packet;
 import ca.soccer1992.lavaproxy.packets.clientserver.FinishConfiguration;
 import ca.soccer1992.lavaproxy.packets.clientserver.KnownPacks;
 import ca.soccer1992.lavaproxy.packets.clientserver.PluginMessage;
+import ca.soccer1992.lavaproxy.packets.readers.PlayReader;
 import ca.soccer1992.lavaproxy.packets.server.ClientInfo;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -22,18 +23,18 @@ public class ConfigHandler extends Handler{
             return true;
         }
         if (p instanceof FinishConfiguration){
-            System.out.println(c.conType);
             if (c.conType != ConnectionTypes.POST_CONFIG){
                 c.disconnect("ConfigurationFinish sent before server ConfigurationFinish", true);
                 return true;
             }
             System.out.println("SWITCHED TO PLAY");
             c.conType = ConnectionTypes.PLAY;
+            c.setReader(new PlayReader());
             c.backendConnection.writePacket(new FinishConfiguration());
+            c.disconnect("WIP Play.", false);
             return true;
         }
         if (p instanceof KnownPacks packet){
-            System.out.println("e");
             c.backendConnection.writePacketServer(packet);
             return true;
         }

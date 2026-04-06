@@ -39,6 +39,8 @@ public class Connection {
     public String connectedServer = null;
     public Connection backendConnection = null;
     public boolean isClosed = false;
+    public boolean isBackend = false;
+
     public Component _recentDisconnectMessage;
     public Iterator<String> tryIter = Arrays.stream(Main.trys).iterator();
     public void setCompression(int amt){
@@ -144,7 +146,7 @@ public class Connection {
     }
     public void writePacketServer(Packet p){
         ByteBuf buf = Unpooled.buffer();
-        System.out.println(protoReader.getPacketFromInfo(protocol, p.getClass()));
+        //System.out.println(protoReader.getPacketFromInfo(protocol, p.getClass()));
         writeVarInt(protoReader.getPacketFromInfo(protocol, p.getClass()), buf);
         _writePacket(p, buf);
 
@@ -219,10 +221,9 @@ public class Connection {
     }
     public void _disconnect(Component reason, boolean nolog){
         if (isClosed) return;
-        try{
-            throw new IllegalArgumentException("no.");
-        } catch (Exception e){
-            e.printStackTrace();
+        if (isBackend){
+            backendConnection.backendDisconnect(reason);
+            return;
         }
         try {
             switch (conType) {
@@ -264,23 +265,24 @@ public class Connection {
     }
     public ByteBuf readPacket(){
         if (isClosed) return null;
-        try{
+        try {
+            heldData.discardReadBytes(); // compact first
             heldData.markReaderIndex();
-            int oldSize = heldData.readableBytes();
-        int len = readVarInt(heldData);
-        if (len > heldData.readableBytes()){
+
+            if (heldData.readableBytes() < 1) return null;
+
+            int len = readVarInt(heldData);
+
+            if (len > heldData.readableBytes()){
+                heldData.resetReaderIndex();
+                return null;
+            }
+
+            return heldData.readBytes(len);
+
+        } catch (Exception e) {
             return null;
         }
-        int lenSize = oldSize-heldData.readableBytes();
-        if (oldSize-lenSize>=len){
-            // WE CAN READ IT!!
-            return heldData.readBytes(len);
-        } else {
-            heldData.resetReaderIndex();
-            return null; // we can't read it
-
-        }} catch (Exception e){return null;}
-
     }
 
 

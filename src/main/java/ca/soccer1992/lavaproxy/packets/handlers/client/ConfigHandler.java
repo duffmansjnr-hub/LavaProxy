@@ -57,8 +57,6 @@ public class ConfigHandler extends Handler {
         }
         if (p instanceof FinishConfiguration){
             c.backendConnection.conType = ConnectionTypes.POST_CONFIG;
-            System.out.println(c.backendConnection.conType);
-            System.out.println("e");
             c.backendConnection.writePacket(new FinishConfiguration());
             c.conType = ConnectionTypes.PLAY;
             return true;

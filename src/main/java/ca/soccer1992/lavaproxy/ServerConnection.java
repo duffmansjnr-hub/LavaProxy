@@ -52,6 +52,7 @@ public class ServerConnection {
                                     c.setReader(new HandshakeReader());
                                     c.writePacketServer(p);
                                     c.setProtocol(con.protocol);
+                                    c.isBackend = true;
                                     if (intent.getId()>1) {
                                         LoginStart login = new LoginStart();
                                         login.setName(con.plr.name);
@@ -73,7 +74,7 @@ public class ServerConnection {
 
                                 @Override
                                 public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-                                    cause.printStackTrace();
+
                                     ctx.close();
                                 }
                             });

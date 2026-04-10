@@ -12,7 +12,6 @@ import net.kyori.adventure.text.Component;
 import static ca.soccer1992.lavaproxy.utils.PacketHelpers.*;
 public class PacketProcessor extends ChannelDuplexHandler {
     public boolean client;
-
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         Connection con = ctx.channel().attr(Main.READER).get();
@@ -71,7 +70,6 @@ public class PacketProcessor extends ChannelDuplexHandler {
 
             }
         } catch (Exception e){
-            e.printStackTrace();
             con.disconnect(Component.text(e.toString()), true);
         } finally{
             in.release();

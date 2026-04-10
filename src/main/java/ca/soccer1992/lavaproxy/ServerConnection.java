@@ -3,7 +3,6 @@ package ca.soccer1992.lavaproxy;
 import ca.soccer1992.lavaproxy.packets.ConnectionTypes;
 import ca.soccer1992.lavaproxy.packets.HandshakeIntent;
 import ca.soccer1992.lavaproxy.packets.handlers.client.LoginHandler;
-import ca.soccer1992.lavaproxy.packets.readers.HandshakeReader;
 import ca.soccer1992.lavaproxy.packets.readers.LoginReader;
 import ca.soccer1992.lavaproxy.packets.server.*;
 import io.netty.bootstrap.Bootstrap;
@@ -29,17 +28,19 @@ public class ServerConnection {
                             ch.attr(Main.READER).set(c);
                             throughConnection[0] = c;
                             ch.attr(Main.BACKEND).set(con);
+                            c.backendConnection = con;
+                            con.backendConnection = c;
                             ch.pipeline().addFirst(new PacketProcessor(true));
 
                             ch.pipeline().addLast(new ServerHandler());
                             ch.pipeline().addLast(new ChannelInboundHandlerAdapter() {
                                 @Override
                                 public void channelInactive(ChannelHandlerContext ctx){
-
-                                    c.backendConnection.backendDisconnect("Connection closed");
+                                    if (con.backendConnection == c) { // only disconnect if still the active backend
+                                        c.backendConnection.backendDisconnect("Connection closed");
+                                    }
                                     c.close();
                                     group.shutdownGracefully();
-
                                 }
 
                                 @Override
@@ -50,7 +51,6 @@ public class ServerConnection {
                                     p.setProtocol(con.protocol);
                                     p.setHost(con.connectAddr.getHostString());
                                     p.setPort(con.connectAddr.getPort());
-                                    c.setReader(new HandshakeReader());
                                     c.writePacketServer(p);
                                     c.setProtocol(con.protocol);
                                     c.isBackend = true;
@@ -62,7 +62,7 @@ public class ServerConnection {
                                         c.plr.name = con.plr.name;
                                         c.plr.brand = con.plr.brand;
                                         c.plr.infoPacket = con.plr.infoPacket;
-                                        c.backendConnection = con;
+                                        //c.backendConnection = con;
                                         c.setReader(new LoginReader());
                                         c.conType = ConnectionTypes.LOGIN;
                                         c.setHandler(new LoginHandler());

@@ -9,7 +9,6 @@ import ca.soccer1992.lavaproxy.packets.client.login.LoginSuccess;
 import ca.soccer1992.lavaproxy.packets.readers.ConfigReader;
 import ca.soccer1992.lavaproxy.packets.server.LoginAck;
 import ca.soccer1992.lavaproxy.packets.server.LoginStart;
-import ca.soccer1992.lavaproxy.utils.ComponentUtils;
 
 
 
@@ -31,7 +30,11 @@ public class LoginHandler extends Handler{
             success.setName(c.plr.name);
             success.setUUID(c.plr.uuid);
             if (c.protocol.getProtocol()<MinecraftVersions.MINECRAFT_1_20_2.getProtocol()){
-                c.disconnect(ComponentUtils.parser.deserialize("<rainbow>Testing (<1.20.2 LOGIN KICK)</rainbow>"),false);
+                //c.disconnect(ComponentUtils.parser.deserialize("<rainbow>Testing (<1.20.2 LOGIN KICK)</rainbow>"),false);
+                c.connect(c.tryIter.next());
+
+//                ConfigHandler.handlePlay(c);
+
                 return true;
             }
             c.writePacket(success);

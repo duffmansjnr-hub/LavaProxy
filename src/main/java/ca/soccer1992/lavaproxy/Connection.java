@@ -37,6 +37,7 @@ public class Connection {
     public ConnectionTypes conType = ConnectionTypes.HANDSHAKE;
     public ByteBuf heldData = Unpooled.buffer();
     public String connectedServer = null;
+    public String lastServer = null;
     public Connection backendConnection = null;
     public boolean isClosed = false;
     public boolean isBackend = false;
@@ -56,9 +57,9 @@ public class Connection {
     }
 
     public String fillPlaceholders(String placeholder, String kickMsg, String brand){
-        return fillPlaceholders(placeholder, kickMsg, brand, "", 0);
+        return fillPlaceholders(placeholder, kickMsg, brand, "", 0,"");
     }
-    public String fillPlaceholders(String placeholder, String kickMsg, String brand, String host, int port){
+    public String fillPlaceholders(String placeholder, String kickMsg, String brand, String host, int port, String origBrand){
         String conServer = "";
         if (connectedServer != null){
             conServer = connectedServer;
@@ -77,20 +78,27 @@ public class Connection {
                 .replace("{serverName}",conServer)
                 .replace("{ipHost}",hostString)
                 .replace("{host}", host)
-                .replace("{port}",port+"");
+                .replace("{port}",port+"")
+                .replace("{backendBrand}",origBrand);
     }
+
     public void backendDisconnect(Component message){
         backendConnection = null;
         _recentDisconnectMessage = parser.deserialize(fillPlaceholders(Main.translations.get("backend.player.disconnect"), miniMessage(message), plr.brand)); //Component.text("You have been disconnected from " + connectedServer + ": ").color(NamedTextColor.RED).append(message);
 
         System.out.println(fillPlaceholders(Main.translations.get("backend.disconnect"), plain(message), plr.brand));
-
+        connectedServer = null;
+        if (lastServer != null){
+            connect(lastServer);
+            lastServer = null;
+            return;
+        }
         if (!tryIter.hasNext()){
             noLogDisconnect(_recentDisconnectMessage);
         } else {
-            connect(tryIter.next());
+            String next = tryIter.next();
+            connect(next);
         }
-        connectedServer = null;
 
     }
     // to make a lot of random junk very easier
@@ -109,11 +117,11 @@ public class Connection {
         this.packetHandler = r;
     }
     public void setReader(Reader r){
+        //new Exception(r.getClass().toString() + " " + isBackend).printStackTrace();
         this.protoReader = r;
     }
     public void connect(String server){
         if (isClosed) return;
-
         connectedServer = server;
         ArrayList<Object> serverInfo = Main.servers.get(server);
         String host = (String) serverInfo.get(0);
@@ -122,8 +130,6 @@ public class Connection {
         Connection con = new ServerConnection().connect(this, HandshakeIntent.LOGIN, host, port);
         if (con == null){
             connectedServer = null;
-        } else {
-            backendConnection = con;
         }
     }
     public void setProtocol(MinecraftVersions proto){
@@ -142,13 +148,17 @@ public class Connection {
     }
     public void writePacket(Packet p){
         ByteBuf buf = Unpooled.buffer();
-        writeVarInt(protoReader.getPacketFromInfoClient(protocol, p.getClass()), buf);
+        int cID = protoReader.getPacketFromInfoClient(protocol, p.getClass());
+        if (cID == 0xffff) return;
+        writeVarInt(cID, buf);
         _writePacket(p, buf);
     }
     public void writePacketServer(Packet p){
         ByteBuf buf = Unpooled.buffer();
         //System.out.println(protoReader.getPacketFromInfo(protocol, p.getClass()));
-        writeVarInt(protoReader.getPacketFromInfo(protocol, p.getClass()), buf);
+        int cID = protoReader.getPacketFromInfo(protocol, p.getClass());
+        if (cID == 0xffff) return;
+        writeVarInt(cID, buf);
         _writePacket(p, buf);
 
     }
@@ -248,13 +258,14 @@ public class Connection {
                     break;
             }
         } catch (Exception e){
-            e.printStackTrace();
             close();
         }
+
+
         if (nolog) return;
         System.out.println(fillPlaceholders(Main.translations.get("log.disconnect"), plain(reason), plr.brand));
         //System.out.printf("%s has disconnected for: %s%n",plr,PlainTextComponentSerializer.plainText().serialize(reason));
-
+        if (backendConnection != null && !backendConnection.hasDisconnected && !backendConnection.isClosed && !isBackend) backendConnection.close();
     }
     public void close(){
 
@@ -262,6 +273,7 @@ public class Connection {
         isClosed = true;
         nChannel.writeAndFlush(Unpooled.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
         heldData.release();
+
     }
     public ByteBuf readPacket(){
         if (isClosed) return null;

@@ -52,6 +52,7 @@ public abstract class Reader {
         DefinitionPair oldEntry = null;
         int correct = 0;
         int ver = ver1.getProtocol();
+        if (definitions.get(packet) == null) return 0xffff;
         for (DefinitionPair pair : definitions.get(packet)){
             if (oldEntry != null){
                 if (pair.protocol().getProtocol()>ver){
@@ -66,7 +67,6 @@ public abstract class Reader {
 
     public static DefinitionPair _nearestLower(List<DefinitionPair> items, int target) {
         DefinitionPair result = null;
-
         for (DefinitionPair item : items) {
 
             int value = item.protocol().getProtocol();

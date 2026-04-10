@@ -4,6 +4,8 @@ import ca.soccer1992.lavaproxy.MinecraftVersions;
 import ca.soccer1992.lavaproxy.packets.DefinitionPair;
 import ca.soccer1992.lavaproxy.packets.Packet;
 import ca.soccer1992.lavaproxy.packets.client.NBTKick;
+import ca.soccer1992.lavaproxy.packets.server.ClientInfo;
+
 import java.util.List;
 import java.util.Map;
 
@@ -29,7 +31,21 @@ public class PlayReader extends Reader {
                     new DefinitionPair(MinecraftVersions.MINECRAFT_1_21_5, 0x1c),
                     new DefinitionPair(MinecraftVersions.MINECRAFT_1_21_9, 0x20)
 
-                    )
+            ),
+            ClientInfo.class, List.of(
+                    new DefinitionPair(MinecraftVersions.MINECRAFT_1_7_2, 0x15),
+                    new DefinitionPair(MinecraftVersions.MINECRAFT_1_9, 0x4),
+                    new DefinitionPair(MinecraftVersions.MINECRAFT_1_12, 0x5),
+                    new DefinitionPair(MinecraftVersions.MINECRAFT_1_12_1, 0x7),
+                    new DefinitionPair(MinecraftVersions.MINECRAFT_1_14, 0x8),
+                    new DefinitionPair(MinecraftVersions.MINECRAFT_1_19, 0x7),
+                    new DefinitionPair(MinecraftVersions.MINECRAFT_1_19_1, 0x8),
+                    new DefinitionPair(MinecraftVersions.MINECRAFT_1_19_3, 0x9),
+                    new DefinitionPair(MinecraftVersions.MINECRAFT_1_19_4, 0xA),
+                    new DefinitionPair(MinecraftVersions.MINECRAFT_1_20_2, 0xC),
+                    new DefinitionPair(MinecraftVersions.MINECRAFT_1_20_5, 0xD)
+
+            )
             );
 
     @Override
